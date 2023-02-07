@@ -1,0 +1,43 @@
+# docke-compose.yml
+version: "3.3"
+services:
+ web:
+    build: .
+    ports:
+    - "8000:5000"
+    networks:
+      project_network:
+        aliases:
+          - backendhost
+    volumes:
+      - .:/workdir
+    environment:
+      FLASK_DEBUG: "True"
+
+ postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+
+ pgadmin:
+    image: dpage/pgadmin4
+
+    environment:
+       PGADMIN_DEFAULT_EMAIL: "luis.felipe.belalcazar@correounivalle.edu.co"
+       PGADMIN_DEFAULT_PASSWORD: "123456"
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+networks:
+ project_network:
+  name: project_net
+  driver: bridge
+  ipam:
+    driver: default
